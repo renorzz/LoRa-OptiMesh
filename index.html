@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoRa-OptiMesh | Hardware Engineering Showcase &amp; Digital Twin</title>
+
+  <!-- Google Fonts: Inter, Space Grotesk & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Clean Studio Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <a href="#" class="nav-brand">
+      <div class="brand-logo-badge">
+        <i data-lucide="cpu" style="width: 20px; height: 20px;"></i>
+      </div>
+      <div class="brand-text">
+        <h2>LoRa-OptiMesh</h2>
+        <span>Tim Dicoba Aja Dulu &bull; Teknik Instrumentasi FV-ITS</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#overview" class="nav-link active">Overview</a></li>
+      <li><a href="#hardware-fisik" class="nav-link">Hardware &amp; Skematik</a></li>
+      <li><a href="#digital-twin" class="nav-link">Digital Twin</a></li>
+      <li><a href="#mesh-failover" class="nav-link">Mesh Failover</a></li>
+      <li><a href="#specifications" class="nav-link">Spesifikasi</a></li>
+      <li><a href="#impact" class="nav-link">Dampak ESG</a></li>
+    </ul>
+
+    <div class="status-badge-nav">
+      <span class="pulse-dot-green"></span>
+      <span>433 MHz (ISM BAND) &bull; SF10 AKTIF</span>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="overview">
+    <div class="hero-grid">
+      <div>
+        <div class="academic-badge">
+          <i data-lucide="award" style="width: 14px; height: 14px;"></i>
+          <span>TIM DICOBA AJA DULU &bull; DEPARTEMEN TEKNIK INSTRUMENTASI FV-ITS</span>
+        </div>
+        <h1 class="hero-title">
+          LoRa-OptiMesh: <br>
+          <span class="hero-title-accent">Sentinel Pemantauan Kerak &amp; Komputasi Edge</span>
+        </h1>
+        <p class="hero-desc">
+          Karya inovasi instrumentasi proses oleh <b>Tim Dicoba Aja Dulu</b> dari <b>Departemen Teknik Instrumentasi, Fakultas Vokasi, Institut Teknologi Sepuluh Nopember (ITS), Surabaya</b>. Sistem instrumentasi nirkabel sub-GHz non-invasif untuk deteksi degradasi termal dan pemantauan kerak (<em>fouling</em>) pada <em>Heat Exchanger Networks</em> (HEN) kilang petrokimia berbasis kalkulasi termodinamika deterministik di mikrokontroler ESP32-S3 serta ketahanan failover <em>AODV multi-hop mesh</em>.
+        </p>
+
+        <div class="hero-stats-row">
+          <div class="stat-box">
+            <div class="stat-val">&lt; $30</div>
+            <div class="stat-lbl">Biaya Node (vs $20k kabel)</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val text-emerald">&gt; 520 m</div>
+            <div class="stat-lbl">Jangkauan Sub-GHz SF10</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val text-primary-blue">&lt; 450 ms</div>
+            <div class="stat-lbl">AODV Reroute Failover</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-val">&lt; 0.85%</div>
+            <div class="stat-lbl">Deviasi Aspen HYSYS</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.85rem; flex-wrap: wrap;">
+          <a href="#hardware-fisik" class="btn btn-primary">
+            <i data-lucide="layers" style="width: 16px; height: 16px;"></i>
+            <span>Lihat Hardware &amp; Skematik</span>
+          </a>
+          <a href="#digital-twin" class="btn btn-outline">
+            <i data-lucide="activity" style="width: 16px; height: 16px;"></i>
+            <span>Simulator Digital Twin</span>
+          </a>
+          <a href="#mesh-failover" class="btn btn-outline">
+            <i data-lucide="network" style="width: 16px; height: 16px;"></i>
+            <span>Simulasi Jaringan Mesh</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero Hardware Preview Card -->
+      <div class="hero-telemetry-card">
+        <div class="telemetry-header">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="award" style="width: 16px; height: 16px; color: var(--color-primary);"></i>
+            <span class="telemetry-title">TIM RISET &amp; INOVASI INSTRUMENTASI</span>
+          </div>
+          <span class="status-pill status-pill-emerald">
+            <span class="status-dot dot-emerald"></span> PROTOTIPE TERUJI
+          </span>
+        </div>
+
+        <!-- Embedded Physical Hardware Photo Preview -->
+        <div class="hw-image-frame lightbox-trigger" data-src="assets/both_device.PNG" data-caption="Implementasi Hardware Fisik LoRa-OptiMesh: Transmitter Node (Kiri) dan Gateway Receiver (Kanan)" style="margin-bottom: 1.25rem;">
+          <img src="assets/both_device.PNG" alt="Hardware LoRa-OptiMesh Dual Device">
+          <div class="hw-image-overlay">
+            <div>
+              <div class="hw-image-title">Transmitter &amp; Gateway Base Station</div>
+              <div class="hw-image-sub">ESP32-S3 N16R8V &bull; SX1278 LoRa &bull; DS18B20 &bull; Alarm</div>
+            </div>
+            <div class="hw-zoom-badge">
+              <i data-lucide="maximize-2" style="width: 13px; height: 13px;"></i>
+              <span>Perbesar</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Research Team & Department Credentials Box -->
+        <div class="team-credentials-box">
+          <div class="team-badge-row">
+            <div>
+              <div class="team-name-tag">Tim Dicoba Aja Dulu</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">Karya Inovasi Teknologi Instrumentasi Industri</div>
+            </div>
+            <span class="dept-name-tag">Teknik Instrumentasi</span>
+          </div>
+
+          <div class="team-meta-row">
+            <span class="team-meta-label">Departemen:</span>
+            <span class="team-meta-value">Departemen Teknik Instrumentasi</span>
+          </div>
+
+          <div class="team-meta-row">
+            <span class="team-meta-label">Fakultas &amp; Kampus:</span>
+            <span class="team-meta-value">Fakultas Vokasi, Institut Teknologi Sepuluh Nopember</span>
+          </div>
+
+          <div class="team-meta-row" style="align-items: flex-start;">
+            <span class="team-meta-label">Anggota Peneliti:</span>
+            <div class="team-members-list">
+              <span class="member-chip"><i data-lucide="user" style="width: 11px; height: 11px; color: var(--color-primary);"></i> Moreno Rizkihakiki</span>
+              <span class="member-chip"><i data-lucide="user" style="width: 11px; height: 11px; color: var(--color-primary);"></i> M. Alif Al Ayyubi</span>
+              <span class="member-chip"><i data-lucide="user" style="width: 11px; height: 11px; color: var(--color-primary);"></i> M. Abigail Novarianto</span>
+              <span class="member-chip"><i data-lucide="user" style="width: 11px; height: 11px; color: var(--color-primary);"></i> Shefi Pildun Yulitalia</span>
+            </div>
+          </div>
+
+          <div class="team-meta-row">
+            <span class="team-meta-label">Fokus Riset:</span>
+            <span class="team-meta-value" style="font-size: 0.78rem; color: var(--color-primary);">Instrumentasi Nirkabel Sub-GHz &bull; Termodinamika Edge &bull; AODV Failover</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       HARDWARE FISIK & SKEMATIK RANGKAIAN ELEKTRONIKA
+       ========================================================================== -->
+  <section class="section-wrapper" id="hardware-fisik" style="background: var(--bg-surface); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div class="section-head">
+      <span class="section-tag">Physical Engineering Showcase</span>
+      <h2 class="section-title">Implementasi Hardware Fisik &amp; Skematik</h2>
+      <p class="section-subtitle">
+        Dokumentasi autentik perangkat keras LoRa-OptiMesh yang telah dirakit dan divalidasi, meliputi Transmitter Node (Terminal Sensor Edge), Gateway Node (Base Station Receiver), serta diagram skematik rangkaian KiCad.
+      </p>
+    </div>
+
+    <!-- Gallery Navigation Tabs -->
+    <div class="hw-tabs-nav">
+      <button class="hw-tab-btn active" data-tab="tab-both">
+        <i data-lucide="layers" style="width: 16px; height: 16px;"></i>
+        <span>Sistem Lengkap (Dual-Device)</span>
+      </button>
+      <button class="hw-tab-btn" data-tab="tab-transmitter">
+        <i data-lucide="cpu" style="width: 16px; height: 16px;"></i>
+        <span>Transmitter Node (Pengirim)</span>
+      </button>
+      <button class="hw-tab-btn" data-tab="tab-gateway">
+        <i data-lucide="radio" style="width: 16px; height: 16px;"></i>
+        <span>Gateway Node (Penerima)</span>
+      </button>
+      <button class="hw-tab-btn" data-tab="tab-schematic">
+        <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
+        <span>Skematik Rangkaian KiCad</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: BOTH DEVICES -->
+    <div class="hw-tab-pane active" id="tab-both">
+      <div class="hw-showcase-grid">
+        <div class="hw-image-frame lightbox-trigger" data-src="assets/both_device.PNG" data-caption="Perangkat Keras Lengkap LoRa-OptiMesh: Transmitter Node (Kiri) dan Gateway Node (Kanan)">
+          <img src="assets/both_device.PNG" alt="LoRa-OptiMesh Dual Device Prototype">
+          <div class="hw-image-overlay">
+            <div>
+              <div class="hw-image-title">Setup Perangkat Keras Lengkap LoRa-OptiMesh</div>
+              <div class="hw-image-sub">Transmitter Node Sensorik (Kiri) &amp; Gateway Base Station (Kanan)</div>
+            </div>
+            <div class="hw-zoom-badge">
+              <i data-lucide="maximize-2" style="width: 13px; height: 13px;"></i>
+              <span>Klik untuk Perbesar</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hw-details-card">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h3>Validasi Sistem End-to-End</h3>
+            <span class="status-pill status-pill-emerald">
+              <span class="status-dot dot-emerald"></span> TERUJI SECARA EMPIRIS
+            </span>
+          </div>
+
+          <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">
+            Sistem telemetri nirkabel LoRa-OptiMesh terdiri dari dua unit utama yang saling berkomunikasi menggunakan gelombang sub-GHz pita 433 MHz (Ai-Thinker Ra-02 / Semtech SX1278) dengan modulasi Chirp Spread Spectrum (CSS) SF10:
+          </p>
+
+          <div class="hw-feature-list">
+            <div class="hw-feature-item">
+              <div class="hw-feature-icon">
+                <i data-lucide="thermometer" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="hw-feature-text">
+                <h4>Transmitter Node (Terminal Sensor Edge)</h4>
+                <p>Dipasang langsung pada flange pipa heat exchanger. Mengakuisisi temperatur menggunakan probe DS18B20 SS316, melakukan kalkulasi termodinamika LMTD, U, dan Rf secara lokal di ESP32-S3, dan memancarkan paket telemetri terkompresi 16-byte.</p>
+              </div>
+            </div>
+
+            <div class="hw-feature-item">
+              <div class="hw-feature-icon">
+                <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="hw-feature-text">
+                <h4>Gateway Node (Central Receiver &amp; Alarm)</h4>
+                <p>Ditempatkan di stasiun kontrol kilang. Menerima transmisi LoRa, memverifikasi integritas payload melalui CRC-8, mengaktifkan alarm buzzer dan lampu LED status bila ambang batas kritis terlampaui, serta menjembatani data ke SCADA.</p>
+              </div>
+            </div>
+
+            <div class="hw-feature-item">
+              <div class="hw-feature-icon">
+                <i data-lucide="shield-check" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="hw-feature-text">
+                <h4>Ketahanan Gangguan Lingkungan Industri</h4>
+                <p>Dilengkapi antena sub-GHz dengan standoff pilar kuningan impedansi terjaga dan bidang ground perfboard yang meminimalkan interferensi elektromagnetik dari motor induksi dan pompa kilang.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: TRANSMITTER NODE -->
+    <div class="hw-tab-pane" id="tab-transmitter">
+      <div class="hw-showcase-grid">
+        <div class="hw-image-frame lightbox-trigger" data-src="assets/transmitter_device.PNG" data-caption="Transmitter Node LoRa-OptiMesh: ESP32-S3 DevKitC-1 N16R8V, Ai-Thinker Ra-02 SX1278, Probe Suhu DS18B20, dan Potensiometer Simulasi RV1">
+          <img src="assets/transmitter_device.PNG" alt="LoRa-OptiMesh Transmitter Node">
+          <div class="hw-image-overlay">
+            <div>
+              <div class="hw-image-title">Transmitter Node Detail Close-Up</div>
+              <div class="hw-image-sub">ESP32-S3 N16R8V &bull; Ra-02 LoRa &bull; DS18B20 &bull; RV1 Potensiometer</div>
+            </div>
+            <div class="hw-zoom-badge">
+              <i data-lucide="maximize-2" style="width: 13px; height: 13px;"></i>
+              <span>Klik untuk Perbesar</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hw-details-card">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h3>Anatomi Transmitter Node</h3>
+            <span class="status-pill status-pill-emerald">
+              <span class="status-dot dot-emerald"></span> EDGE COMPUTE CORE
+            </span>
+          </div>
+
+          <div class="hw-feature-list">
+            <div class="hw-feature-item">
+              <div class="hw-feature-icon">
+                <i data-lucide="cpu" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="hw-feature-text">
+                <h4>ESP32-S3-DevKitC-1-N16R8V</h4>
+                <p>SoC bertenaga Xtensa LX7 dual-core 240 MHz dengan 16 MB Flash dan 8 MB Octal PSRAM. Menjalankan engine termodinamika deterministik dan mengelola <em>circular ring buffer</em> saat jaringan terputus.</p>
+              </div>
+            </div>
+
+            <div class="hw-feature-item">
+              <div class="hw-feature-icon">
+                <i data-lucide="radio" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="hw-feature-text">
+                <h4>Modul LoRa Ai-Thinker Ra-02 (Semtech SX1278)</h4>
+                <p>Transceiver LoRa sub-GHz dengan sensitivitas tinggi -132 dBm dan daya pancar +14 dBm. Dihubungkan ke ESP32-S3 melalui bus SPI cepat (SCK: GPIO13, MISO: GPIO12, MOSI: GPIO11, NSS: GPIO10, DIO0: GPIO21).</p>
+              </div>
+            </div>
+
+            <div class="hw-feature-item">
+              <div class="hw-feature-icon">
+                <i data-lucide="thermometer" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="hw-feature-text">
+                <h4>Konektor Sensor DS18B20 1-Wire</h4>
+                <p>Header 3-pin (VCC 3.3V, Data GPIO6 dengan resistor pull-up 4.7k, GND) terhubung ke probe industri SS316 yang tahan korosi dan tahan fluida hidrokarbon.</p>
+              </div>
+            </div>
+
+            <div class="hw-feature-item">
+              <div class="hw-feature-icon">
+                <i data-lucide="sliders" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="hw-feature-text">
+                <h4>Potensiometer Simulasi Fouling (RV1 10k)</h4>
+                <p>Terhubung ke ADC1 GPIO1 untuk simulasi dinamis kondisi kerak di laboratorium uji coba, memungkinkan pengujian transisi kondisi bersih hingga fouling kritis secara instan.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: GATEWAY NODE -->
+    <div class="hw-tab-pane" id="tab-gateway">
+      <div class="hw-showcase-grid">
+        <div class="hw-image-frame lightbox-trigger" data-src="assets/gateway_device.PNG" data-caption="Gateway Node LoRa-OptiMesh: ESP32-S3 DevKitC-1 N16R8V, Ai-Thinker Ra-02 LoRa Receiver, Buzzer Piezo, serta Indikator LED Hijau & Merah">
+          <img src="assets/gateway_device.PNG" alt="LoRa-OptiMesh Gateway Node">
+          <div class="hw-image-overlay">
+            <div>
+              <div class="hw-image-title">Gateway Receiver Detail Close-Up</div>
+              <div class="hw-image-sub">ESP32-S3 &bull; Ra-02 Receiver &bull; Piezo Buzzer &bull; Dual LED Status</div>
+            </div>
+            <div class="hw-zoom-badge">
+              <i data-lucide="maximize-2" style="width: 13px; height: 13px;"></i>
+              <span>Klik untuk Perbesar</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hw-details-card">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <h3>Anatomi Gateway Node</h3>
+            <span class="status-pill status-pill-emerald">
+              <span class="status-dot dot-emerald"></span> BASE RECEIVER
+            </span>
+          </div>
+
+          <div class="hw-feature-list">
+            <div class="hw-feature-item">
+              <div class="hw-feature-icon">
+                <i data-lucide="activity" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="hw-feature-text">
+                <h4>ESP32-S3 Gateway Processor</h4>
+                <p>Mengelola konsentrasi paket dari multi-hop mesh, mengolah paket telemetri berurutan, serta menjembatani data ke SCADA/HMI melalui antarmuka serial UART atau Modbus TCP.</p>
+              </div>
+            </div>
+
+            <div class="hw-feature-item">
+              <div class="hw-feature-icon">
+                <i data-lucide="volume-2" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="hw-feature-text">
+                <h4>Piezoelectric Audio Alarm Buzzer (GPIO7)</h4>
+                <p>Menghasilkan nada peringatan akustik 85 dB ketika resistansi kerak Rf menembus batas kritis (&ge; 0.0005 m&sup2;K/W) atau saat terdeteksi node hilang (link loss).</p>
+              </div>
+            </div>
+
+            <div class="hw-feature-item">
+              <div class="hw-feature-icon">
+                <i data-lucide="sun" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="hw-feature-text">
+                <h4>Dual-Color Visual Indicator LEDs</h4>
+                <p>LED Hijau di GPIO16 menandakan tautan telemetri aktif dan sehat (PDR &gt; 99%), sedangkan LED Merah di GPIO15 menyala sebagai peringatan fouling kritis dan pemadaman gateway.</p>
+              </div>
+            </div>
+
+            <div class="hw-feature-item">
+              <div class="hw-feature-icon">
+                <i data-lucide="zap" style="width: 18px; height: 18px;"></i>
+              </div>
+              <div class="hw-feature-text">
+                <h4>Antena Sub-GHz Grounded</h4>
+                <p>Koneksi antena diperkuat dengan tiang pilar kuningan yang terhubung langsung ke bidang ground PCB untuk rasio sinyal terhadap derau (SNR) yang optimal.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: KICAD SCHEMATICS -->
+    <div class="hw-tab-pane" id="tab-schematic">
+      <div class="schematic-grid">
+        <!-- Transmitter Schematic Card -->
+        <div class="schematic-card lightbox-trigger" data-src="assets/transmitter_schematic.png" data-caption="Skematik Rangkaian Elektronika KiCad - Transmitter Board LoRa-OptiMesh (ESP32-S3, SX1278 Ra-02, DS18B20, RV1)">
+          <div class="schematic-card-header">
+            <div>
+              <h4>Skematik Transmitter Board</h4>
+              <span style="font-size: 0.75rem; color: var(--color-primary); font-family: var(--font-mono); font-weight: 600;">KiCad E.D.A. 9.0.3 &bull; Sheet 1/1</span>
+            </div>
+            <a href="assets/TRANSMITTER SCHEMATIC.pdf" target="_blank" class="btn btn-outline btn-sm" onclick="event.stopPropagation();">
+              <i data-lucide="download" style="width: 13px; height: 13px;"></i>
+              <span>Unduh PDF</span>
+            </a>
+          </div>
+          <div class="schematic-thumb-wrap">
+            <img src="assets/transmitter_schematic.png" alt="Transmitter Schematic Diagram">
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+            <span>Klik gambar untuk tampilan resolusi penuh</span>
+            <i data-lucide="zoom-in" style="width: 14px; height: 14px; color: var(--color-primary);"></i>
+          </div>
+        </div>
+
+        <!-- Gateway Schematic Card -->
+        <div class="schematic-card lightbox-trigger" data-src="assets/gateway_schematic.png" data-caption="Skematik Rangkaian Elektronika KiCad - Gateway Board LoRa-OptiMesh (ESP32-S3, SX1278 Ra-02, Buzzer, LED Hijau & Merah)">
+          <div class="schematic-card-header">
+            <div>
+              <h4>Skematik Gateway Board</h4>
+              <span style="font-size: 0.75rem; color: var(--color-primary); font-family: var(--font-mono); font-weight: 600;">KiCad E.D.A. 9.0.3 &bull; Sheet 1/1</span>
+            </div>
+            <a href="assets/GATEWAY SCHEMATIC.pdf" target="_blank" class="btn btn-outline btn-sm" onclick="event.stopPropagation();">
+              <i data-lucide="download" style="width: 13px; height: 13px;"></i>
+              <span>Unduh PDF</span>
+            </a>
+          </div>
+          <div class="schematic-thumb-wrap">
+            <img src="assets/gateway_schematic.png" alt="Gateway Schematic Diagram">
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+            <span>Klik gambar untuk tampilan resolusi penuh</span>
+            <i data-lucide="zoom-in" style="width: 14px; height: 14px; color: var(--color-primary);"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technical Pinout Table -->
+      <div class="pinout-table-wrap">
+        <div class="pinout-table-header">
+          <h4>Pemetaan Pinout Hardware (ESP32-S3 &harr; Komponen)</h4>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">Berdasarkan Desain PCB KiCad</span>
+        </div>
+        <table class="pinout-table">
+          <thead>
+            <tr>
+              <th>Sub-Sistem</th>
+              <th>Nama Pin Komponen</th>
+              <th>Pin ESP32-S3</th>
+              <th>Deskripsi Fungsi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>LoRa SPI Transceiver</td>
+              <td class="mono">NSS (Chip Select)</td>
+              <td class="mono text-primary-blue">GPIO10</td>
+              <td>SPI Chip Select untuk modul Semtech SX1278</td>
+            </tr>
+            <tr>
+              <td>LoRa SPI Transceiver</td>
+              <td class="mono">MOSI / MISO / SCK</td>
+              <td class="mono text-primary-blue">GPIO11 / GPIO12 / GPIO13</td>
+              <td>Bus komunikasi data SPI kecepatan tinggi (hingga 10 MHz)</td>
+            </tr>
+            <tr>
+              <td>LoRa Kendali &amp; Interrupt</td>
+              <td class="mono">DIO0 (Packet Rx/Tx Done)</td>
+              <td class="mono text-primary-blue">GPIO21</td>
+              <td>Interrupt eksternal saat paket telemetri berhasil diterima/dikirim</td>
+            </tr>
+            <tr>
+              <td>LoRa Kendali &amp; Interrupt</td>
+              <td class="mono">RST (Hardware Reset)</td>
+              <td class="mono text-primary-blue">GPIO2</td>
+              <td>Reset pulsa aktif rendah untuk pemulihan chip LoRa</td>
+            </tr>
+            <tr>
+              <td>Sensor Suhu (Transmitter)</td>
+              <td class="mono">DS18B20 1-Wire Data</td>
+              <td class="mono text-emerald">GPIO6</td>
+              <td>Saluran data digital satu kawat dengan resistor pull-up 4.7k</td>
+            </tr>
+            <tr>
+              <td>Simulasi Fouling (Transmitter)</td>
+              <td class="mono">RV1 10k Wiper</td>
+              <td class="mono text-amber">GPIO1 (ADC1_CH0)</td>
+              <td>Input analog 12-bit untuk pengaturan ambang batas resistansi secara fisik</td>
+            </tr>
+            <tr>
+              <td>Alarm Akustik (Gateway)</td>
+              <td class="mono">Buzzer I/O</td>
+              <td class="mono text-rose">GPIO7</td>
+              <td>Driver sinyal PWM piezoelektrik 2.7 kHz untuk peringatan dini</td>
+            </tr>
+            <tr>
+              <td>Indikator Visual (Gateway)</td>
+              <td class="mono">LED Merah &amp; LED Hijau</td>
+              <td class="mono text-primary-blue">GPIO15 (Merah) &amp; GPIO16 (Hijau)</td>
+              <td>Indikator status link jaringan dan kondisi fouling kritis (resistor 220 &Omega;)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       DIGITAL TWIN THERMODYNAMIC SIMULATOR
+       ========================================================================== -->
+  <section class="section-wrapper" id="digital-twin">
+    <div class="section-head">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="section-tag">First-Principles Physics Engine</span>
+          <h2 class="section-title">Simulator Digital Twin &amp; Penalti Bahan Bakar</h2>
+          <p class="section-subtitle">
+            Geser parameter proses di bawah ini untuk melihat kalkulasi LMTD, koefisien perpindahan panas $U(t)$, resistansi kerak $R_f$, dan penalti konsumsi gas furnace secara real-time.
+          </p>
+        </div>
+        <div id="disp-status-badge" class="status-pill status-pill-emerald">
+          <span class="status-dot dot-emerald"></span> KINERJA TERMAL NORMAL
+        </div>
+      </div>
+    </div>
+
+    <!-- Skenario Presets -->
+    <div class="scenario-pill-group">
+      <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-right: 0.5rem;">Skenario Aspen HYSYS:</span>
+      <button class="btn btn-outline btn-sm" id="btn-preset-clean">Kondisi Bersih Awal (Clean)</button>
+      <button class="btn btn-outline btn-sm" id="btn-preset-mod">Fouling Sedang (Hari ke-30)</button>
+      <button class="btn btn-outline btn-sm" id="btn-preset-sev">Fouling Berat (Hari ke-60)</button>
+      <button class="btn btn-outline btn-sm" id="btn-preset-post">Pasca Pembersihan (Recovery)</button>
+    </div>
+
+    <div class="digital-twin-grid">
+      <!-- Input Sliders Card -->
+      <div class="param-controller-card">
+        <h3 style="font-size: 1.1rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+          <i data-lucide="sliders" style="width: 18px; height: 18px; color: var(--color-primary);"></i>
+          <span>Parameter Proses Heat Exchanger</span>
+        </h3>
+
+        <!-- Th_in -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="slider-name">Hot Inlet (Th,in):</span>
+            <span class="slider-val" id="val-th-in">220.0 &deg;C</span>
+          </div>
+          <input type="range" id="slider-th-in" min="180" max="260" step="0.5" value="220">
+        </div>
+
+        <!-- Th_out -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="slider-name">Hot Outlet (Th,out):</span>
+            <span class="slider-val" id="val-th-out">160.0 &deg;C</span>
+          </div>
+          <input type="range" id="slider-th-out" min="130" max="190" step="0.5" value="160">
+        </div>
+
+        <!-- Tc_in -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="slider-name">Cold Inlet (Tc,in):</span>
+            <span class="slider-val" id="val-tc-in">110.0 &deg;C</span>
+          </div>
+          <input type="range" id="slider-tc-in" min="80" max="140" step="0.5" value="110">
+        </div>
+
+        <!-- Tc_out -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="slider-name">Cold Outlet (Tc,out):</span>
+            <span class="slider-val" id="val-tc-out">170.0 &deg;C</span>
+          </div>
+          <input type="range" id="slider-tc-out" min="140" max="210" step="0.5" value="170">
+        </div>
+
+        <!-- Mass Flow Rate -->
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="slider-name">Laju Alir Crude (m):</span>
+            <span class="slider-val" id="val-flow">105.0 kg/s</span>
+          </div>
+          <input type="range" id="slider-flow" min="80" max="140" step="1" value="105">
+        </div>
+
+        <div style="font-size: 0.78rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 0.85rem; margin-top: 1rem; line-height: 1.5;">
+          Luas Area: <b>A = 85.4 m&sup2;</b> | Clean Baseline U: <b>650 W/m&sup2;K</b> | Ambang Batas: <b>Rf &ge; 0.0005 m&sup2;K/W</b>
+        </div>
+      </div>
+
+      <!-- Output Metric Cards Grid -->
+      <div class="metrics-dashboard-grid">
+        <!-- LMTD -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Effective LMTD (&Delta;Tlm)</span>
+            <i data-lucide="thermometer" class="metric-icon"></i>
+          </div>
+          <div class="metric-big-num">
+            <span id="disp-lmtd">50.0</span>
+            <span class="metric-unit">&deg;C</span>
+          </div>
+          <div class="metric-sub">
+            <i data-lucide="check" style="width: 14px; height: 14px; color: var(--color-emerald);"></i>
+            <span>Driving force perpindahan panas</span>
+          </div>
+        </div>
+
+        <!-- Overall U -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Koefisien Perpindahan (U)</span>
+            <i data-lucide="activity" class="metric-icon"></i>
+          </div>
+          <div class="metric-big-num">
+            <span id="disp-u">482.1</span>
+            <span class="metric-unit">W/m&sup2;K</span>
+          </div>
+          <div class="metric-sub">
+            <span>Kondisi awal bersih: 650.0 W/m&sup2;K</span>
+          </div>
+        </div>
+
+        <!-- Fouling Rf -->
+        <div class="metric-card alert-state">
+          <div class="metric-header">
+            <span class="metric-title">Resistansi Kerak (Rf)</span>
+            <i data-lucide="alert-triangle" class="metric-icon" style="color: var(--color-rose);"></i>
+          </div>
+          <div class="metric-big-num text-rose">
+            <span id="disp-rf">0.00052</span>
+          </div>
+          <div class="metric-sub text-rose">
+            <i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i>
+            <span>Ambang Kritis: 0.00050 m&sup2;K/W</span>
+          </div>
+        </div>
+
+        <!-- Fuel Penalty -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Penalti Bahan Bakar (&Delta;Vfuel)</span>
+            <i data-lucide="flame" class="metric-icon" style="color: var(--color-amber);"></i>
+          </div>
+          <div class="metric-big-num text-amber">
+            <span id="disp-fuel">+83.8</span>
+            <span class="metric-unit">Nm&sup3;/h</span>
+          </div>
+          <div class="metric-sub">
+            <span>Efisiensi furnace 80% | LHV 38.5 MJ/Nm&sup3;</span>
+          </div>
+        </div>
+
+        <!-- Annual Monetary Loss -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Biaya Penalti Tahunan</span>
+            <i data-lucide="dollar-sign" class="metric-icon" style="color: var(--color-emerald);"></i>
+          </div>
+          <div class="metric-big-num text-emerald">
+            <span id="disp-cost">$140,000</span>
+          </div>
+          <div class="metric-sub">
+            <span>Estimasi per preheat train kilang</span>
+          </div>
+        </div>
+
+        <!-- CO2 Emissions -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Emisi CO2 Berlebih</span>
+            <i data-lucide="cloud" class="metric-icon" style="color: var(--color-primary);"></i>
+          </div>
+          <div class="metric-big-num text-primary-blue">
+            <span id="disp-co2">1,200 t</span>
+            <span class="metric-unit">/tahun</span>
+          </div>
+          <div class="metric-sub">
+            <span>Dapat dicegah via jadwal pembersihan tepat</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       NETWORK MESH FAILOVER SIMULATION
+       ========================================================================== -->
+  <section class="section-wrapper" id="mesh-failover" style="background: var(--bg-surface); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div class="section-head">
+      <div style="display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="section-tag">Fault-Tolerant IoT Protocol</span>
+          <h2 class="section-title">Simulasi Failover Jaringan &amp; Retensi 8 MB PSRAM</h2>
+          <p class="section-subtitle">
+            Uji ketahanan transmisi sub-GHz LoRa (433.0 MHz) saat terjadi kegagalan relay node atau pemadaman total gateway.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn btn-outline btn-sm" id="btn-kill-node2">Matikan Relay Node 2</button>
+          <button class="btn btn-outline btn-sm" id="btn-kill-gateway">Simulasi Pemadaman Gateway</button>
+          <button class="btn btn-primary btn-sm" id="btn-restore-mesh">Pulihkan Jaringan</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="network-sim-box">
+      <!-- Animated Topology Canvas -->
+      <div class="mesh-canvas-wrap">
+        <canvas id="mesh-canvas"></canvas>
+      </div>
+
+      <!-- Network Stats & Logging -->
+      <div style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 style="font-size: 1.05rem; margin-bottom: 1rem; color: var(--text-primary);">Status Metrik Jaringan Mesh</h3>
+
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div class="network-kpi-card">
+              <div class="network-kpi-label">PACKET DELIVERY RATIO (PDR)</div>
+              <div class="network-kpi-val text-emerald" id="disp-mesh-pdr">99.4%</div>
+            </div>
+
+            <div class="network-kpi-card">
+              <div class="network-kpi-label">AODV REROUTE LATENCY</div>
+              <div class="network-kpi-val text-primary-blue" id="disp-mesh-latency">&lt; 450 ms</div>
+            </div>
+
+            <div class="network-kpi-card">
+              <div class="network-kpi-label">RETENSI BUFFER 8 MB PSRAM</div>
+              <div class="network-kpi-val text-amber" id="disp-mesh-psram">0 pkts</div>
+              <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Kapasitas &gt; 300.000 paket (96 jam data)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-msg-box status-msg-emerald" id="disp-mesh-status">
+          Jaringan Mesh Sub-GHz Normal. Beroperasi pada frekuensi 433.0 MHz (SF10, CR 4/8, Ra-02). Seluruh hop telemetri seimbang.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       TECHNICAL SPECIFICATIONS
+       ========================================================================== -->
+  <section class="section-wrapper" id="specifications">
+    <div class="section-head">
+      <span class="section-tag">Engineering Data Sheet</span>
+      <h2 class="section-title">Spesifikasi Lengkap Alat</h2>
+      <p class="section-subtitle">Parameter teknis perangkat keras dan performa operasional LoRa-OptiMesh berdasarkan hasil pengujian laboratorium.</p>
+    </div>
+
+    <div class="specs-grid">
+      <!-- RF & Wireless -->
+      <div class="spec-category-card">
+        <h3 class="spec-category-title">
+          <i data-lucide="radio" style="width: 18px; height: 18px;"></i>
+          <span>RF &amp; Jaringan LoRa</span>
+        </h3>
+        <ul class="spec-list">
+          <li class="spec-item">
+            <span class="spec-lbl">Pita Frekuensi</span>
+            <span class="spec-val text-primary-blue">433.05 - 434.79 MHz (433 MHz ISM Band)</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Modulasi</span>
+            <span class="spec-val">Chirp Spread Spectrum (CSS)</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Spreading Factor</span>
+            <span class="spec-val">SF10 (BW 125 kHz)</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Coding Rate</span>
+            <span class="spec-val">CR 4/8 (Hamming FEC)</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Daya Pancar / Link Budget</span>
+            <span class="spec-val">+14 dBm / 146.0 dB</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Sensitivitas Receiver</span>
+            <span class="spec-val">-132 dBm</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Edge Compute & Sensing -->
+      <div class="spec-category-card">
+        <h3 class="spec-category-title">
+          <i data-lucide="cpu" style="width: 18px; height: 18px;"></i>
+          <span>Komputasi Edge &amp; Sensor</span>
+        </h3>
+        <ul class="spec-list">
+          <li class="spec-item">
+            <span class="spec-lbl">Core Processor</span>
+            <span class="spec-val text-primary-blue">ESP32-S3 Dual-Core 240 MHz</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Memori Internal</span>
+            <span class="spec-val">16 MB Flash + 8 MB PSRAM</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Probe Suhu</span>
+            <span class="spec-val">4&times; Dallas DS18B20 SS316</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Resolusi &amp; Akurasi</span>
+            <span class="spec-val">12-bit (&plusmn;0.5 &deg;C)</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Tampilan Lapangan</span>
+            <span class="spec-val">0.96" I2C SSD1306 OLED</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Siklus Sampling</span>
+            <span class="spec-val">1.0 Hz (Deep Sleep adaptif)</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mechanical & Power -->
+      <div class="spec-category-card">
+        <h3 class="spec-category-title">
+          <i data-lucide="shield" style="width: 18px; height: 18px;"></i>
+          <span>Mekanikal &amp; Manajemen Daya</span>
+        </h3>
+        <ul class="spec-list">
+          <li class="spec-item">
+            <span class="spec-lbl">Baterai Cadangan</span>
+            <span class="spec-val text-primary-blue">3.2V 3200 mAh LiFePO4</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Otonomi Baterai</span>
+            <span class="spec-val">&ge; 96 jam saat mati total</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Arus Diam (Iq)</span>
+            <span class="spec-val">&lt; 25 &mu;A (LDO ultra-low)</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Rating Proteksi Enclosure</span>
+            <span class="spec-val">IP67 Polycarbonate Housing</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Metode Pemasangan</span>
+            <span class="spec-val">Clamp-On Magnet Neodymium</span>
+          </li>
+          <li class="spec-item">
+            <span class="spec-lbl">Biaya Fabrikasi Node</span>
+            <span class="spec-val text-emerald">&lt; $30 USD per unit</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Impact & UN SDGs Banner -->
+    <div class="impact-banner" id="impact">
+      <div>
+        <span class="section-tag">ESG &amp; Dekarbonisasi Kilang</span>
+        <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.65rem; color: var(--text-primary);">
+          Dampak Terukur pada Industri Petrokimia
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+          Implementasi pada Crude Distillation Unit (CDU) berkapasitas 50.000 barel/hari (BPD) menghasilkan penghematan bahan bakar gas dapur pembakar sebesar <b>4.8%</b>, memangkas biaya operasional hingga <b>$140.000/tahun per preheat train</b>, serta mencegah emisi <b>1.200 ton CO2/tahun</b>.
+        </p>
+      </div>
+
+      <div>
+        <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-emerald);">
+          Kontribusi UN Sustainable Development Goals (SDGs):
+        </div>
+        <div class="sdg-badge-group">
+          <span class="sdg-tag">SDG 4: Quality Education</span>
+          <span class="sdg-tag">SDG 7: Clean Energy</span>
+          <span class="sdg-tag">SDG 9: Industry &amp; Innovation</span>
+          <span class="sdg-tag">SDG 10: Reduced Inequalities</span>
+          <span class="sdg-tag">SDG 12: Responsible Consumption</span>
+          <span class="sdg-tag">SDG 13: Climate Action</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fullscreen Image & Schematic Lightbox Modal -->
+  <div class="modal-backdrop" id="lightbox-modal">
+    <div class="lightbox-card">
+      <div class="lightbox-header">
+        <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary);" id="lightbox-caption">Tampilan Resolusi Penuh</span>
+        <button class="btn btn-outline btn-sm" id="btn-close-lightbox">&times; Tutup</button>
+      </div>
+      <div class="lightbox-body">
+        <img id="lightbox-img" src="" alt="Pratinjau Resolusi Tinggi">
+      </div>
+    </div>
+  </div>
+
+  <!-- Academic Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div>
+        <div class="footer-title">LoRa-OptiMesh &bull; Tim Dicoba Aja Dulu</div>
+        <div class="footer-desc">Autonomous Sub-GHz Edge Sentinel for Petrochemical Heat Exchanger Networks</div>
+        <div class="footer-authors">
+          Anggota Tim: Moreno Rizkihakiki, Muhammad Alif Al Ayyubi, Muhammad Abigail Novarianto, Shefi Pildun Yulitalia
+        </div>
+      </div>
+      <div class="footer-institution">
+        <div class="footer-dept">Departemen Teknik Instrumentasi</div>
+        <div class="footer-location">Fakultas Vokasi &bull; Institut Teknologi Sepuluh Nopember, Surabaya</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Script Bundle -->
+  <script src="js/digital-twin.js"></script>
+  <script src="js/network-sim.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
